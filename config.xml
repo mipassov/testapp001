@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+    <widget xmlns = "http://www.w3.org/ns/widgets"
+        xmlns:gap = "http://phonegap.com/ns/1.0"
+        id        = "com.alliantsupport.test001"
+        versionCode="10" 
+        version   = "1.0.1">
+
+    <!-- versionCode is optional and Android only -->
+
+    <name>JsQ Mob</name>
+
+    <description>
+        JsQ Mob test 001. 
+    </description>
+
+    <author href="https://alliantsupport.com" email="support@phonegap.com">
+        Mikhail Passov
+    </author>
+
+</widget>
