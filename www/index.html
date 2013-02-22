@@ -7,36 +7,111 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <title>
         </title>
+
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
         <link rel="stylesheet" href="my.css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
         </script>
+		<script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
         <script src="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.2.0/jquery.mobile-1.2.0.min.js">
         </script>
         <script src="my.js">
         </script>
-        <!-- User-generated css -->
-        <style>
-        </style>
-        <!-- User-generated js -->
+
+		 <style>
+			#progressbar .ui-progressbar-value {
+			background-color: #f00;
+			}
+			#progressbar {
+			background-color: #f00;
+			background-image:none;
+			}
+			 .progress-label {
+			float: left;
+			margin-left: 50%;
+			margin-top: 5px;
+			font-weight: bold;
+			text-shadow: 1px 1px 0 #fff;
+			}
+		</style>
+
         <script>
-            try {
+        try {
+        	$( document ).bind( "mobileinit", function() {
+                // Make your jQuery Mobile framework configuration changes here!
+                $.mobile.allowCrossDomainPages = true;
+                $.support.cors = true; // need to be true
+            });        
 
-    $(function() {
+        	
+        	$( '#systemStatusPage' ).live( 'pagebeforecreate',function(event){
+        		$( "#progressbar" ).progressbar({
+	        		 value: 75,
+	        		 change: function() {
+	        			 $( ".progress-label" ).text( $( "#progressbar" ).progressbar( "value" ) + "%" );
+	        		 }
+	       		 });
+      		});
 
-    });
+        	$( '#systemStatusPage' ).live( 'pagebeforechange',function(event){
+        		  //alert( 'systemStatusPage is about to change!' );
+  	      	});
+          	
+        	$( '#refreshStatusPageButton' ).live( 'click',function(event){
+        		//$("#systemStatusInfo").html("");
+        		/*
+        		$.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?",
+        			{tags: "mount rainier",tagmode: "any", format: "json" },
+        			function(data) {
+	        			$.each(data.items, function(i,item){
+    	    		 		$("<img/>").attr("src", item.media.m).appendTo("#systemStatusInfo");
+	        			 	if ( i == 1 ) return false;
+    	    		 	});
+        			}
+        		);
+				*/
+        		
+        		/*
+        		$.getJSON('test.json', function(data) {
+       				var items = [];
+       				$.each(data, function(key, val) {
+       			  		items.push('<li id="' + key + '">' + val + '</li>');
+        			});
+       			  $('<ul/>', {
+        			  'class': 'my-new-list',
+        			  html: items.join('')
+        			  }).appendTo('#systemStatusInfo');
+        			});
+        		*/
+           		$.getJSON('http://authorservicessupport.com/lockton_qc/qcsvc.php?callback=?', function(data) {
+					$("#prodStatImage").attr("src",data.prodstatus==1?"images/go.png":"images/NoGo.png");
+					$("#qcStatImage").attr("src",data.qcstatus==1?"images/go.png":"images/NoGo.png");
+					var avail = Math.round(data.avail);
+					$("#avgRespVal").html(data.avgresp);
+					$("#sysAvailBar").css('width',avail+'%');
+					$("#sysAvailVal").html(data.avail);
+					$("#lastTrNameVal").html(data.lasttr.name);
+					$("#lastTrDtVal").html(data.lasttr.ts);
+					$("#lastUpdateVal").html(data.lastupd);
+					progressbar = $( "#progressbar" );
+					progressbar.find( ".ui-progressbar-value").css({"background": '#0F0'});
+					progressbar.progressbar( "option", { value: Math.floor( data.avail )});
+        		});
+        		
+        	});
+		} catch (error) {
+    		alert("dddd "+error);
 
-  } catch (error) {
-    console.error("Your javascript has an error: " + error);
-  }
+			console.error("Your javascript has an error: " + error);
+  		}
         </script>
     </head>
     <body>
-        <!-- Home -->
-        <div data-role="page" id="page1">
-            <div data-theme="a" data-role="header">
+        <div data-role="page" id="loginPage" data-theme="a" >
+            <div data-role="header">
                 <h3 id="Monitorosaurus">
-                    Monitorosaurus
+                    Monitorasaurus
                 </h3>
             </div>
             <div data-role="content">
@@ -56,15 +131,86 @@
                         <input name="password" id="textinput2" placeholder="" value="" type="password" />
                     </fieldset>
                 </div>
-                <a data-role="button" href="#page1">
+                <a data-role="button" href="#systemStatusPage">
                     Log In
                 </a>
                 <div>
-                    <a href="" data-transition="fade">
+                    <a href="#forgotPasswordPage" data-transition="fade">
                         forgot password?
                     </a>
                 </div>
             </div>
-        </div>
+        </div> <!-- /loginPage -->
+
+        <div data-role="page" id="systemStatusPage" data-theme="a" >
+            <div data-role="header">
+                <h3 id="Monitorosaurus">
+                    Monitorasaurus
+                </h3>
+            </div>
+            <div data-role="content">
+	            <div id="systemStatusInfo">
+	                <h4>
+	                    ArticleWorks System Status:
+	                </h4>
+	                <div style="padding-top: 0px; padding-bottom: 10px;">
+	                    Last Update: <span id="lastUpdateVal">0</span> min ago
+	                </div>
+	                <div style="padding-top: 10px; height: 32px; position: relative; border: 0px solid #b8b8b8;">
+	                    <img id="qcStatImage" src="images/go.png" alt="image" style="position: absolute; top: 50%; left: 16px; margin-left: -16px; margin-top: -18px" />
+	                    <div style="position: absolute; top: 50%; left: 60px; margin-left: -16px; margin-top: -12px">QC System Status</div> 
+	                </div>
+	                <div style="padding-top: 10px; height: 32px; position: relative; border: 0px solid #b8b8b8;">
+	                    <img id="prodStatImage" src="images/NoGo.png" alt="image" style="position: absolute; top: 50%; left: 16px; margin-left: -16px; margin-top: -18px" />
+	                    <div style="position: absolute; top: 50%; left: 60px; margin-left: -16px; margin-top: -12px">Production System Status</div> 
+	                </div>
+	                <div style="padding-top: 10px;">
+	                    System Availability (last 24 hours): 
+		                <div id="progressbar"><div class="progress-label">Loading...</div></div>
+            	        <!--
+            	        <div style="height: 32px; position: relative; border: 0px solid #b8b8b8;">
+	                    	<div style="background-color:red; width:100%; height:100%; position: absolute; top: 50%; left: 0px; margin-top: -16px"></div>
+	                    	<div id="sysAvailBar" style="background-color:green; width:95%; height:100%; position: absolute; top: 50%; left: 0px; margin-top: -16px"></div>
+	                    	<div id="sysAvailVal" style="position: absolute; top: 50%; left: 100%; margin-left: -50px; margin-top: -12px">93%</div>
+	                	</div>
+	                	--> 
+	                	
+	                </div>
+   	                <div style="padding-top: 10px;">
+	                    Average Response Time: <span id="avgRespVal">433</span> ms
+	                </div>
+   	                <div style="padding-top: 10px;">
+	                    Last Transaction: <br/>
+	                    <span id="lastTrNameVal">AAAAA</span> 
+	                    <span id="lastTrDtVal">??</span>
+	                </div>
+	            </div>
+                <a data-role="button" id="refreshStatusPageButton">
+                    Refresh
+                </a>
+            </div>
+        </div> <!-- /systemStatusPage -->
+
+        <div data-role="page" id="forgotPasswordPage" data-theme="a" >
+            <div data-role="header">
+                <h3 id="Monitorosaurus">
+                    Monitorasaurus
+                </h3>
+            </div>
+            <div data-role="content">
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup" data-mini="true">
+                        <label for="emailInput">
+                            Email
+                        </label>
+                        <input name="email" id="emailInput" placeholder="" value="" type="text" />
+                    </fieldset>
+                </div>
+                <a data-role="button" href="#loginPage">
+                    Submit
+                </a>
+            </div>
+        </div> <!-- /forgotPasswordPage -->
+
     </body>
 </html>
