@@ -85,8 +85,8 @@
         			});
         		*/
            		$.getJSON('http://authorservicessupport.com/lockton_qc/qcsvc.php?callback=?', function(data) {
-					$("#prodStatImage").attr("src",data.prodstatus==1?"images/go.png":"images/NoGo.png");
-					$("#qcStatImage").attr("src",data.qcstatus==1?"images/go.png":"images/NoGo.png");
+					$("#prodStatImage").attr("src",data.prodstatus==1?"go.png":"nogo.png");
+					$("#qcStatImage").attr("src",data.qcstatus==1?"go.png":"nogo.png");
 					var avail = Math.round(data.avail);
 					$("#avgRespVal").html(data.avgresp);
 					$("#sysAvailBar").css('width',avail+'%');
@@ -151,17 +151,17 @@
             <div data-role="content">
 	            <div id="systemStatusInfo">
 	                <h4>
-	                    ArticleWorks System Status:
+	                    Lockton System Status:
 	                </h4>
 	                <div style="padding-top: 0px; padding-bottom: 10px;">
 	                    Last Update: <span id="lastUpdateVal">0</span> min ago
 	                </div>
 	                <div style="padding-top: 10px; height: 32px; position: relative; border: 0px solid #b8b8b8;">
-	                    <img id="qcStatImage" src="images/go.png" alt="image" style="position: absolute; top: 50%; left: 16px; margin-left: -16px; margin-top: -18px" />
+	                    <img id="qcStatImage" src="go.png" alt="image" style="position: absolute; top: 50%; left: 16px; margin-left: -16px; margin-top: -18px" />
 	                    <div style="position: absolute; top: 50%; left: 60px; margin-left: -16px; margin-top: -12px">QC System Status</div> 
 	                </div>
 	                <div style="padding-top: 10px; height: 32px; position: relative; border: 0px solid #b8b8b8;">
-	                    <img id="prodStatImage" src="images/NoGo.png" alt="image" style="position: absolute; top: 50%; left: 16px; margin-left: -16px; margin-top: -18px" />
+	                    <img id="prodStatImage" src="nogo.png" alt="image" style="position: absolute; top: 50%; left: 16px; margin-left: -16px; margin-top: -18px" />
 	                    <div style="position: absolute; top: 50%; left: 60px; margin-left: -16px; margin-top: -12px">Production System Status</div> 
 	                </div>
 	                <div style="padding-top: 10px;">
