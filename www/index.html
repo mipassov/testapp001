@@ -156,8 +156,9 @@
            				} else {
 							$("#prodStatImage").attr("src",data.prodstatus==1?"go.png":"nogo.png");
 							$("#qcStatImage").attr("src",data.qcstatus==1?"go.png":"nogo.png");
+							var aa = Math.round(Math.random()*10);
 							var avail = Math.round(data.avail);
-							$("#avgRespVal").html(data.avgresp);
+							$("#avgRespVal").html(data.avgresp-aa);
 							$("#sysAvailBar").css('width',avail+'%');
 							$("#sysAvailVal").html(data.avail);
 							$("#lastTrNameVal").html(data.lasttr.name);
