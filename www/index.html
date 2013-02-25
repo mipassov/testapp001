@@ -61,6 +61,7 @@
         	    iobj.current = (iobj.current + 1) % iobj.total_frames;
         	}
 
+        	interv = null;
         	function on_body_load(img_obj) { // <body onload='on_body_load()'>...
         	    var canvas = document.getElementById('canvasElement');
         	                 // <canvas id='canvasElement' width='320' height='200'/>
@@ -68,7 +69,7 @@
         	    context.fillStyle = "rgba(256, 256, 256, 1)";
         	    context.fillRect(1, 1, 127, 127);
         	    //context.drawImage(img_obj.source, 69, 50);
-        	    setInterval((function (c, i) {
+        	    interv = setInterval((function (c, i) {
         	                return function () {
         	                    draw_anim(c, 0, 0, i);
         	                };
@@ -96,28 +97,31 @@
         		$( '#refreshStatusPageButton' ).click();
   	      	});
           	
+	        var img_obj = {
+	        	    'source': null,
+	        	    'current': 0,
+	        	    'total_frames': 27,
+	        	    'width': 128,
+	        	    'height': 128
+	        	};
+        	var img = new Image();
+
         	$( '#forgotPasswordPage' ).live( 'pagebeforeshow',function(event){
-        		
         		/*var canvas = document.getElementById('myCanvas');
                 var context = canvas.getContext('2d');
                 var imageObj = new Image();
                 imageObj.src = 'http://www.html5canvastutorials.com/demos/assets/darth-vader.jpg';
                 context.drawImage(imageObj, 69, 50);
                 */
-    	        var img_obj = {
-    	        	    'source': null,
-    	        	    'current': 0,
-    	        	    'total_frames': 27,
-    	        	    'width': 128,
-    	        	    'height': 128
-    	        	};
-            	var img = new Image();
         	    img_obj.source = img;  // we set the image source for our object.
             	img.src = 'dance2.gif'; // contains an image of size 256x16 with 16 frames of size 16x16
                 on_body_load(img_obj);
-                
   	      	});
-          	
+        	$( '#forgotPasswordPage' ).live( 'pagebeforehide',function(event){
+        		alert('leave');
+        		clearInterval(interv);
+        	});
+        	
         	$( '#refreshStatusPageButton' ).live( 'click',function(event){
         		//$("#systemStatusInfo").html("");
         		/*
