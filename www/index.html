@@ -45,7 +45,7 @@
             });        
 
         	
-        	$( '#systemStatusPage' ).live( 'pagebeforecreate',function(event){
+        	$( '#systemStatusPage' ).live( 'pagebeforecreate',function(event) {
         		$( "#progressbar" ).progressbar({
 	        		 value: 75,
 	        		 change: function() {
@@ -54,8 +54,8 @@
 	       		 });
       		});
 
-        	$( '#systemStatusPage' ).live( 'pagebeforechange',function(event){
-        		  //alert( 'systemStatusPage is about to change!' );
+        	$( '#systemStatusPage' ).live( 'pagebeforeshow',function(event){
+        		$( '#refreshStatusPageButton' ).click();
   	      	});
           	
         	$( '#refreshStatusPageButton' ).live( 'click',function(event){
@@ -84,25 +84,34 @@
         			  }).appendTo('#systemStatusInfo');
         			});
         		*/
-           		$.getJSON('http://authorservicessupport.com/lockton_qc/qcsvc.php?callback=?', function(data) {
-					$("#prodStatImage").attr("src",data.prodstatus==1?"go.png":"nogo.png");
-					$("#qcStatImage").attr("src",data.qcstatus==1?"go.png":"nogo.png");
-					var avail = Math.round(data.avail);
-					$("#avgRespVal").html(data.avgresp);
-					$("#sysAvailBar").css('width',avail+'%');
-					$("#sysAvailVal").html(data.avail);
-					$("#lastTrNameVal").html(data.lasttr.name);
-					$("#lastTrDtVal").html(data.lasttr.ts);
-					$("#lastUpdateVal").html(data.lastupd);
-					progressbar = $( "#progressbar" );
-					progressbar.find( ".ui-progressbar-value").css({"background": '#0F0'});
-					progressbar.progressbar( "option", { value: Math.floor( data.avail )});
+           		$.getJSON('http://authorservicessupport.com/lockton_qc/qcsvc.php?callback=?',
+           			{
+	           			login:  $("#textinput1").val(),
+	            		pass: $("#textinput2").val()
+           			},
+         			function(data) {
+           				if (data.error) {
+           					alert (data.error);
+           					$.mobile.changePage("#loginPage");
+           				} else {
+							$("#prodStatImage").attr("src",data.prodstatus==1?"go.png":"nogo.png");
+							$("#qcStatImage").attr("src",data.qcstatus==1?"go.png":"nogo.png");
+							var avail = Math.round(data.avail);
+							$("#avgRespVal").html(data.avgresp);
+							$("#sysAvailBar").css('width',avail+'%');
+							$("#sysAvailVal").html(data.avail);
+							$("#lastTrNameVal").html(data.lasttr.name);
+							$("#lastTrDtVal").html(data.lasttr.ts);
+							$("#lastUpdateVal").html(data.lastupd);
+							progressbar = $( "#progressbar" );
+							progressbar.find( ".ui-progressbar-value").css({"background": '#0F0'});
+							progressbar.progressbar( "option", { value: Math.floor( data.avail )});
+           				}
         		});
         		
         	});
 		} catch (error) {
-    		alert("dddd "+error);
-
+    		alert("error "+error);
 			console.error("Your javascript has an error: " + error);
   		}
         </script>
@@ -115,12 +124,13 @@
                 </h3>
             </div>
             <div data-role="content">
+				<form action="#systemStatusPage" method="get"> 
                 <div data-role="fieldcontain">
                     <fieldset data-role="controlgroup" data-mini="true">
                         <label for="textinput1">
                             Login
                         </label>
-                        <input name="login" id="textinput1" placeholder="" value="login" type="text" />
+                        <input name="login" id="textinput1" placeholder="" value="" type="text" />
                     </fieldset>
                 </div>
                 <div data-role="fieldcontain">
@@ -139,6 +149,7 @@
                         forgot password?
                     </a>
                 </div>
+                </form>
             </div>
         </div> <!-- /loginPage -->
 
@@ -154,7 +165,7 @@
 	                    Lockton System Status:
 	                </h4>
 	                <div style="padding-top: 0px; padding-bottom: 10px;">
-	                    Last Update: <span id="lastUpdateVal">0</span> min ago
+	                    Last Update: <span id="lastUpdateVal">...</span>
 	                </div>
 	                <div style="padding-top: 10px; height: 32px; position: relative; border: 0px solid #b8b8b8;">
 	                    <img id="qcStatImage" src="go.png" alt="image" style="position: absolute; top: 50%; left: 16px; margin-left: -16px; margin-top: -18px" />
