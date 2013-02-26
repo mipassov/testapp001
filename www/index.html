@@ -145,8 +145,8 @@
 	       		 $( "#positionable1" ).position({
 	    			 of: $( "#systemStatusPage" ),
 	    			 at: "center middle",
-	    			 my: "center middle",
-	    			 collision: "fit"
+	    			 my: "center bottom",
+	    			 collision: "none"
 	    			 });
         	    if (img_obj.source == null) {
         	    	img_obj.source = img;
@@ -224,7 +224,7 @@
             </div>
         </div> <!-- /loginPage -->
 
-        <div data-role="page" id="systemStatusPage" data-theme="a" style="border: 1px solid red;">
+        <div data-role="page" id="systemStatusPage" data-theme="a" >
             <div data-role="header">
                 <h3 id="Monitorosaurus">
                     Monitorasaurus
@@ -269,7 +269,7 @@
 	            </div>
             </div>
 
-			<div class="positionable" id="positionable1" style="z-index: 2; border:1px solid green; ">
+			<div class="positionable" id="positionable1" style="z-index: 2;">
 				<canvas id='canvasElement' width='128px' height='128px'></canvas>
 			</div>
 
