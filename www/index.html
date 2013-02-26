@@ -34,6 +34,19 @@
 			font-weight: bold;
 			text-shadow: 1px 1px 0 #fff;
 			}
+
+			.positionable {
+			position: absolute;
+			display: block;
+			right: 0;
+			bottom: 0;
+			text-align: center;
+			}
+
+			#positionable1 {
+			width: 128px;
+			height: 128px;
+			}
 		</style>
     <style>
       #myCanvas {
@@ -51,24 +64,32 @@
     </script>
 
         <script>
-        	function draw_anim(context, x, y, iobj) { // context is the canvas 2d context.
+	    	interv = null;
+    
+	    	function draw_anim(context, x, y, iobj) { // context is the canvas 2d context.
         		if (iobj.source != null) {
     				//alert(context+' '+x+' '+y+' '+iobj.source+' '+iobj.current);
-        	        context.drawImage(iobj.source, iobj.current * iobj.width, 0,
+					context.clearRect(0, 0, iobj.width, iobj.height);
+					context.drawImage(iobj.source, iobj.current * iobj.width, 0,
         	                          iobj.width, iobj.height,
         	                          x, y, iobj.width, iobj.height);
         		}
-        	    iobj.current = (iobj.current + 1) % iobj.total_frames;
+        		if (++iobj.current==iobj.total_frames) {
+					context.clearRect(0, 0, iobj.width, iobj.height);
+					var canvas = $("#canvasElement"); 
+					canvas.parent().css('z-index',0);
+    				if (interv!=null) {
+    					clearInterval(interv);
+    					interv = null;
+    				}
+        		}
+        	    iobj.current = (iobj.current) % iobj.total_frames;
         	}
 
-        	interv = null;
         	function on_body_load(img_obj) { // <body onload='on_body_load()'>...
-        	    var canvas = document.getElementById('canvasElement');
-        	                 // <canvas id='canvasElement' width='320' height='200'/>
-        	    var context = canvas.getContext("2d");
-        	    context.fillStyle = "rgba(256, 256, 256, 1)";
-        	    context.fillRect(1, 1, 127, 127);
-        	    //context.drawImage(img_obj.source, 69, 50);
+				var canvas = $("#canvasElement"); 
+				canvas.parent().css('z-index',2);
+    		   	var context = canvas.get(0).getContext("2d");
         	    interv = setInterval((function (c, i) {
         	                return function () {
         	                    draw_anim(c, 0, 0, i);
@@ -92,9 +113,9 @@
 	        		 }
 	       		 });
       		});
-
+        	
         	$( '#systemStatusPage' ).live( 'pagebeforeshow',function(event){
-        		$( '#refreshStatusPageButton' ).click();
+        		 $( '#refreshStatusPageButton' ).click();
   	      	});
           	
 	        var img_obj = {
@@ -107,48 +128,33 @@
         	var img = new Image();
 
         	$( '#forgotPasswordPage' ).live( 'pagebeforeshow',function(event){
-        		/*var canvas = document.getElementById('myCanvas');
-                var context = canvas.getContext('2d');
-                var imageObj = new Image();
-                imageObj.src = 'http://www.html5canvastutorials.com/demos/assets/darth-vader.jpg';
-                context.drawImage(imageObj, 69, 50);
-                */
-        	    img_obj.source = img;  // we set the image source for our object.
-            	img.src = 'dance2.gif'; // contains an image of size 256x16 with 16 frames of size 16x16
+        	    if (img_obj.source == null) {
+        	    	img_obj.source = img;
+                	img.src = 'dance2.gif';
+        	    }
                 on_body_load(img_obj);
   	      	});
         	$( '#forgotPasswordPage' ).live( 'pagebeforehide',function(event){
-        		alert('leave');
-        		clearInterval(interv);
+				if (interv!=null) {
+					clearInterval(interv);
+					interv = null;
+				}
         	});
         	
         	$( '#refreshStatusPageButton' ).live( 'click',function(event){
-        		//$("#systemStatusInfo").html("");
-        		/*
-        		$.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?",
-        			{tags: "mount rainier",tagmode: "any", format: "json" },
-        			function(data) {
-	        			$.each(data.items, function(i,item){
-    	    		 		$("<img/>").attr("src", item.media.m).appendTo("#systemStatusInfo");
-	        			 	if ( i == 1 ) return false;
-    	    		 	});
-        			}
-        		);
-				*/
-        		
-        		/*
-        		$.getJSON('test.json', function(data) {
-       				var items = [];
-       				$.each(data, function(key, val) {
-       			  		items.push('<li id="' + key + '">' + val + '</li>');
-        			});
-       			  $('<ul/>', {
-        			  'class': 'my-new-list',
-        			  html: items.join('')
-        			  }).appendTo('#systemStatusInfo');
-        			});
-        		*/
-           		$.getJSON('http://authorservicessupport.com/lockton_qc/qcsvc.php?callback=?',
+	       		 $( "#positionable1" ).position({
+	    			 of: $( "#systemStatusPage" ),
+	    			 at: "center middle",
+	    			 my: "center middle",
+	    			 collision: "fit"
+	    			 });
+        	    if (img_obj.source == null) {
+        	    	img_obj.source = img;
+                	img.src = 'dance2.gif';
+        	    }
+                on_body_load(img_obj);
+
+        		$.getJSON('http://authorservicessupport.com/lockton_qc/qcsvc.php?callback=?',
            			{
 	           			login:  $("#textinput1").val(),
 	            		pass: $("#textinput2").val()
@@ -218,7 +224,7 @@
             </div>
         </div> <!-- /loginPage -->
 
-        <div data-role="page" id="systemStatusPage" data-theme="a" >
+        <div data-role="page" id="systemStatusPage" data-theme="a" style="border: 1px solid red;">
             <div data-role="header">
                 <h3 id="Monitorosaurus">
                     Monitorasaurus
@@ -243,14 +249,11 @@
 	                <div style="padding-top: 10px;">
 	                    System Availability (last 24 hours): 
 		                <div id="progressbar"><div class="progress-label">Loading...</div></div>
-            	        <!--
-            	        <div style="height: 32px; position: relative; border: 0px solid #b8b8b8;">
+            	        <!--div style="height: 32px; position: relative; border: 0px solid #b8b8b8;">
 	                    	<div style="background-color:red; width:100%; height:100%; position: absolute; top: 50%; left: 0px; margin-top: -16px"></div>
 	                    	<div id="sysAvailBar" style="background-color:green; width:95%; height:100%; position: absolute; top: 50%; left: 0px; margin-top: -16px"></div>
 	                    	<div id="sysAvailVal" style="position: absolute; top: 50%; left: 100%; margin-left: -50px; margin-top: -12px">93%</div>
-	                	</div>
-	                	--> 
-	                	
+	                	</div--> 
 	                </div>
    	                <div style="padding-top: 10px;">
 	                    Average Response Time: <span id="avgRespVal">433</span> ms
@@ -260,11 +263,16 @@
 	                    <span id="lastTrNameVal">AAAAA</span> 
 	                    <span id="lastTrDtVal">??</span>
 	                </div>
+	                <a data-role="button" id="refreshStatusPageButton">
+	                    Refresh
+	                </a>
 	            </div>
-                <a data-role="button" id="refreshStatusPageButton">
-                    Refresh
-                </a>
             </div>
+
+			<div class="positionable" id="positionable1" style="z-index: 2; border:1px solid green; ">
+				<canvas id='canvasElement' width='128px' height='128px'></canvas>
+			</div>
+
         </div> <!-- /systemStatusPage -->
 
         <div data-role="page" id="forgotPasswordPage" data-theme="a" >
@@ -273,20 +281,25 @@
                     Monitorasaurus
                 </h3>
             </div>
-            <div data-role="content">
-				<!-- canvas id="myCanvas" width="578" height="400"></canvas> -->
-				<canvas id='canvasElement' width='128' height='128'></canvas>
-                <div data-role="fieldcontain">
-                    <fieldset data-role="controlgroup" data-mini="true">
-                        <label for="emailInput">
-                            Email
-                        </label>
-                        <input name="email" id="emailInput" placeholder="" value="" type="text" />
-                    </fieldset>
-                </div>
-                <a data-role="button" href="#loginPage">
-                    Submit
-                </a>
+            <div data-role="content" ">
+				<!-- div style="width: 100%; height: 256px; position: relative; "-->
+					<div style="position: absolute; top:0px; left:0px; width: 252px; height: 252px; z-index: 1; ">
+		                <div data-role="fieldcontain">
+		                    <fieldset data-role="controlgroup" data-mini="true">
+		                        <label for="emailInput">
+		                            Email
+		                        </label>
+		                        <input name="email" id="emailInput" placeholder="" value="" type="text" />
+		                    </fieldset>
+		                </div>
+		                <a data-role="button" href="#loginPage">
+		                    Submit
+		                </a>
+					</div>
+					<div style="position: absolute; top:0px; left:50%; margin-left:-64px; z-index: 2; ">
+						<canvas id='canvasElement2' width='128px' height='128px'></canvas>
+					</div>
+				<!-- /div-->
             </div>
         </div> <!-- /forgotPasswordPage -->
 
