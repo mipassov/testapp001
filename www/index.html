@@ -138,9 +138,13 @@
                 	$("#textinput1").val($.cookie(monitorasaurus.cookieloginname));
                 	$("#textinput2").val($.cookie(monitorasaurus.cookiepassname));
                 	if (!$("#textinput1").val()) {
-                		$("#Monitorosaurus").html("Monitorosaurus!");
-	                	$("#textinput1").val(localStorage.cookieloginname);
-    	            	$("#textinput2").val(localStorage.cookiepassname);
+                		if(typeof(Storage)!=="undefined") {
+                    		$("#Monitorosaurus").html("Monitorosaurus!");
+                    		$("#textinput1").val(localStorage.cookieloginname);
+        	            	$("#textinput2").val(localStorage.cookiepassname);
+                		} else {
+                    		$("#Monitorosaurus").html("Monitorosaurus?");
+                		}						
                 	}
                 }
         	});
