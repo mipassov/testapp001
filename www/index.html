@@ -67,9 +67,7 @@
 	    	interv = null;
 	    	monitorasaurus = {
 	           	cookieloginname: 'monitorasaurus_1',
-	            cookiepassname: 'monitorasaurus_2',
-	            cookieexpires: 365,
-	            cookiepath: '/'
+	            cookiepassname: 'monitorasaurus_2'
 	    	};
     
 	    	function draw_anim(context, x, y, iobj) { // context is the canvas 2d context.
@@ -139,6 +137,11 @@
         		if (!$("#textinput1").val()) {
                 	$("#textinput1").val($.cookie(monitorasaurus.cookieloginname));
                 	$("#textinput2").val($.cookie(monitorasaurus.cookiepassname));
+                	if (!$("#textinput1").val()) {
+                		$("#Monitorosaurus").html("Monitorosaurus!");
+	                	$("#textinput1").val(localStorage.cookieloginname);
+    	            	$("#textinput2").val(localStorage.cookiepassname);
+                	}
                 }
         	});
         	
@@ -179,6 +182,8 @@
            				} else {
            	        		$.cookie(monitorasaurus.cookieloginname, $("#textinput1").val(), { expires: monitorasaurus.cookieexpires, path: monitorasaurus.cookiepath });
            	        		$.cookie(monitorasaurus.cookiepassname, $("#textinput2").val(), { expires: monitorasaurus.cookieexpires, path: monitorasaurus.cookiepath });
+           	        		localStorage.cookieloginname = $("#textinput1").val();
+           	        		localStorage.cookiepassname = $("#textinput2").val();
            					$("#prodStatImage").attr("src",data.prodstatus==1?"go.png":"nogo.png");
 							$("#qcStatImage").attr("src",data.qcstatus==1?"go.png":"nogo.png");
 							var aa = Math.round(Math.random()*10);
