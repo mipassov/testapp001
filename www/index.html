@@ -65,6 +65,12 @@
 
         <script>
 	    	interv = null;
+	    	monitorasaurus = {
+	           	cookieloginname: 'monitorasaurus_1',
+	            cookiepassname: 'monitorasaurus_2',
+	            cookieexpires: 365,
+	            cookiepath: '/'
+	    	};
     
 	    	function draw_anim(context, x, y, iobj) { // context is the canvas 2d context.
         		if (iobj.source != null) {
@@ -86,15 +92,17 @@
         	    iobj.current = (iobj.current) % iobj.total_frames;
         	}
 
-        	function on_body_load(img_obj) { // <body onload='on_body_load()'>...
-				var canvas = $("#canvasElement"); 
-				canvas.parent().css('z-index',2);
-    		   	var context = canvas.get(0).getContext("2d");
-        	    interv = setInterval((function (c, i) {
-        	                return function () {
-        	                    draw_anim(c, 0, 0, i);
-        	                };
-        	    })(context, img_obj), 100);
+        	function on_body_load(img_obj) {
+				if (interv==null) {
+	        		var canvas = $("#canvasElement"); 
+					canvas.parent().css('z-index',2);
+	    		   	var context = canvas.get(0).getContext("2d");
+	        	    interv = setInterval((function (c, i) {
+	        	                return function () {
+	        	                    draw_anim(c, 0, 0, i);
+	        	                };
+	        	    })(context, img_obj), 100);
+				}
         	}
         
         try {
@@ -114,7 +122,7 @@
 	       		 });
       		});
         	
-        	$( '#systemStatusPage' ).live( 'pagebeforeshow',function(event){
+        	$( '#systemStatusPage' ).live( 'pageshow',function(event){
         		 $( '#refreshStatusPageButton' ).click();
   	      	});
           	
@@ -127,14 +135,22 @@
 	        	};
         	var img = new Image();
 
-        	$( '#forgotPasswordPage' ).live( 'pagebeforeshow',function(event){
+			$( '#loginPage' ).live( 'pageshow',function(event) {
+        		if (!$("#textinput1").val()) {
+                	$("#textinput1").val($.cookie(monitorasaurus.cookieloginname));
+                	$("#textinput2").val($.cookie(monitorasaurus.cookiepassname));
+                }
+        	});
+        	
+        	$( '#forgotPasswordPage' ).live( 'pageshow',function(event){
         	    if (img_obj.source == null) {
         	    	img_obj.source = img;
                 	img.src = 'dance2.gif';
         	    }
                 on_body_load(img_obj);
   	      	});
-        	$( '#forgotPasswordPage' ).live( 'pagebeforehide',function(event){
+       	
+        	$( '#forgotPasswordPage' ).live( 'pagehide',function(event){
 				if (interv!=null) {
 					clearInterval(interv);
 					interv = null;
@@ -142,12 +158,9 @@
         	});
         	
         	$( '#refreshStatusPageButton' ).live( 'click',function(event){
-	       		 $( "#positionable1" ).position({
-	    			 of: $( "#systemStatusPage" ),
-	    			 at: "center middle",
-	    			 my: "center bottom",
-	    			 collision: "none"
-	    			 });
+        		var p = $("#systemStatusInfo");
+        		var offset = p.offset();
+        		$( "#positionable1").css({'top': Math.round((p.height()-128)/2)+'px', 'left': Math.round((p.width()-128)/2)+'px'});
         	    if (img_obj.source == null) {
         	    	img_obj.source = img;
                 	img.src = 'dance2.gif';
@@ -164,7 +177,9 @@
            					alert (data.error);
            					$.mobile.changePage("#loginPage");
            				} else {
-							$("#prodStatImage").attr("src",data.prodstatus==1?"go.png":"nogo.png");
+           	        		$.cookie(monitorasaurus.cookieloginname, $("#textinput1").val(), { expires: monitorasaurus.cookieexpires, path: monitorasaurus.cookiepath });
+           	        		$.cookie(monitorasaurus.cookiepassname, $("#textinput2").val(), { expires: monitorasaurus.cookieexpires, path: monitorasaurus.cookiepath });
+           					$("#prodStatImage").attr("src",data.prodstatus==1?"go.png":"nogo.png");
 							$("#qcStatImage").attr("src",data.qcstatus==1?"go.png":"nogo.png");
 							var aa = Math.round(Math.random()*10);
 							var avail = Math.round(data.avail);
@@ -185,7 +200,55 @@
     		alert("error "+error);
 			console.error("Your javascript has an error: " + error);
   		}
-        </script>
+
+		/*!
+		 * jQuery Cookie Plugin
+		 * https://github.com/carhartl/jquery-cookie
+		 *
+		 * Copyright 2011, Klaus Hartl
+		 * Dual licensed under the MIT or GPL Version 2 licenses.
+		 * http://www.opensource.org/licenses/mit-license.php
+		 * http://www.opensource.org/licenses/GPL-2.0
+		 */
+		(function($) {
+		    $.cookie = function(key, value, options) {
+
+		        // key and at least value given, set cookie...
+		        if (arguments.length > 1 && (!/Object/.test(Object.prototype.toString.call(value)) || value === null || value === undefined)) {
+		            options = $.extend({}, options);
+
+		            if (value === null || value === undefined) {
+		                options.expires = -1;
+		            }
+
+		            if (typeof options.expires === 'number') {
+		                var days = options.expires, t = options.expires = new Date();
+		                t.setDate(t.getDate() + days);
+		            }
+
+		            value = String(value);
+
+		            return (document.cookie = [
+		                encodeURIComponent(key), '=', options.raw ? value : encodeURIComponent(value),
+		                options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+		                options.path    ? '; path=' + options.path : '',
+		                options.domain  ? '; domain=' + options.domain : '',
+		                options.secure  ? '; secure' : ''
+		            ].join(''));
+		        }
+
+		        // key and possibly options given, get cookie...
+		        options = value || {};
+		        var decode = options.raw ? function(s) { return s; } : decodeURIComponent;
+
+		        var pairs = document.cookie.split('; ');
+		        for (var i = 0, pair; pair = pairs[i] && pairs[i].split('='); i++) {
+		            if (decode(pair[0]) === key) return decode(pair[1] || ''); // IE saves cookies with empty string as "c; ", e.g. without "=" as opposed to EOMB, thus pair[1] may be undefined
+		        }
+		        return null;
+		    };
+		})(jQuery);
+  		</script>
     </head>
     <body>
         <div data-role="page" id="loginPage" data-theme="a" >
@@ -282,7 +345,7 @@
                 </h3>
             </div>
             <div data-role="content" ">
-				<!-- div style="width: 100%; height: 256px; position: relative; "-->
+				<div style="width: 100%; height: 256px; position: relative; ">
 					<div style="position: absolute; top:0px; left:0px; width: 252px; height: 252px; z-index: 1; ">
 		                <div data-role="fieldcontain">
 		                    <fieldset data-role="controlgroup" data-mini="true">
@@ -299,7 +362,7 @@
 					<div style="position: absolute; top:0px; left:50%; margin-left:-64px; z-index: 2; ">
 						<canvas id='canvasElement2' width='128px' height='128px'></canvas>
 					</div>
-				<!-- /div-->
+				</div>
             </div>
         </div> <!-- /forgotPasswordPage -->
 
