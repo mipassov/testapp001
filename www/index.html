@@ -141,17 +141,16 @@
         	var img = new Image();
 
 			$( '#loginPage' ).live( 'pageshow',function(event) {
-    	    	navigator.splashscreen.hide();
         		if (!$("#textinput1").val()) {
                 	$("#textinput1").val($.cookie(monitorasaurus.cookieloginname));
                 	$("#textinput2").val($.cookie(monitorasaurus.cookiepassname));
                 	if (!$("#textinput1").val()) {
                 		if(typeof(Storage)!=="undefined") {
-                    		$("#Monitorosaurus").html("Monitorosaurus!");
+                    		$("#Monitorosaurus").html("Alliant Site Mon!");
                     		$("#textinput1").val(localStorage.cookieloginname);
         	            	$("#textinput2").val(localStorage.cookiepassname);
                 		} else {
-                    		$("#Monitorosaurus").html("Monitorosaurus?");
+                    		$("#Monitorosaurus").html("Alliant Site Mon?");
                 		}						
                 	}
                 }
@@ -270,8 +269,8 @@
     <body>
         <div data-role="page" id="loginPage" data-theme="a" >
             <div data-role="header">
-                <h3 id="Alliant Site Mon">
-                    Monitorasaurus
+                <h3 id="Monitorosaurus">
+                    Alliant Site Mon
                 </h3>
             </div>
             <div data-role="content">
@@ -307,7 +306,7 @@
         <div data-role="page" id="systemStatusPage" data-theme="a" >
             <div data-role="header">
                 <h3 id="Monitorosaurus">
-                    Monitorasaurus
+                    Alliant Site Mon
                 </h3>
             </div>
             <div data-role="content">
@@ -358,7 +357,7 @@
         <div data-role="page" id="forgotPasswordPage" data-theme="a" >
             <div data-role="header">
                 <h3 id="Monitorosaurus">
-                    Monitorasaurus
+                    Alliant Site Mon
                 </h3>
             </div>
             <div data-role="content" ">
