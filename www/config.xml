@@ -7,10 +7,10 @@
 
     <!-- versionCode is optional and Android only -->
 
-    <name>JsQ Mob</name>
+    <name>Site Mon</name>
 
     <description>
-        JsQ Mob test 001. 
+        Alliant Site Monitor 
     </description>
 
     <author href="https://alliantsupport.com" email="support@phonegap.com">
@@ -34,7 +34,7 @@
     <icon src="res/icon/windows-phone/icon-173.png" gap:platform="winphone" gap:role="background" />
     -->
 
- 	<preference name="splash-screen-duration" value="20000" /> 
+ 	<!-- preference name="splash-screen-duration" value="20000" /--> 
 	<gap:splash src="1363135014_pumpkin.png" />
 	 	       
     <!-- 
