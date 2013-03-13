@@ -53,18 +53,25 @@
         border: 1px solid #9C9898;
       }
     </style>
-    <script>
-//      var canvas = document.getElementById('myCanvas');
-//      var context = canvas.getContext('2d');
-//      var imageObj = new Image();
-//      imageObj.onload = function() {
-//        context.drawImage(imageObj, `69, 50);
-//      };
-//      imageObj.src = 'http://www.html5canvastutorials.com/demos/assets/darth-vader.jpg';
-    </script>
 
         <script>
-	    	interv = null;
+
+        var app = {
+        	    initialize: function() {
+        	        this.bind();
+        	    },
+        	    bind: function() {
+        	        document.addEventListener('deviceready', this.deviceready, false);
+        	    },
+        	    deviceready: function() {
+        	    	navigator.splashscreen.hide();
+        	        app.report('deviceready');
+        	    },
+        	    report: function(id) {
+        	    }
+        	};
+        
+        	interv = null;
 	    	monitorasaurus = {
 	           	cookieloginname: 'monitorasaurus_1',
 	            cookiepassname: 'monitorasaurus_2'
@@ -102,7 +109,7 @@
 	        	    })(context, img_obj), 100);
 				}
         	}
-        
+        	
         try {
         	$( document ).bind( "mobileinit", function() {
                 // Make your jQuery Mobile framework configuration changes here!
